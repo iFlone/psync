@@ -1,0 +1,77 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <LINK href="{% static "podio_sync/css/dataTables.material.css" %}" rel="stylesheet" type="text/css">
+
+
+    <LINK href="{% static "podio_sync/css/podio_sync.css" %}" rel="stylesheet" type="text/css">
+
+
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script src="{% static "podio_sync/js/materialize.js" %}"></script>
+
+    <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script src="{% static "podio_sync/js/dataTables.material.js" %}"></script>
+
+
+    <script>
+        $( document ).ready(function(){
+            $(".button-collapse").sideNav();
+
+        })
+    </script>
+</head>
+<body class="blue-grey lighten-5">
+
+<div class="navbar-fixed">
+<nav class="blue-grey" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="{% url 'index' %}" class="brand-logo">Podio Sync</a>
+      <ul class="right hide-on-med-and-down">
+          <li><a href="#"><i class="material-icons">settings</i></a></li>
+        <li><a href="#"><i class="material-icons">perm_identity</i></a></li>
+
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
+</div>
+
+
+
+
+{% block content %}
+
+{% endblock %}
+
+<footer class="footer blue-grey lighten-4">
+    <div class="container">
+        <p class="text-muted">&copy; 2016 iFlone Software.</p>
+    </div>
+
+      </footer>
+
+
+<div id="ddl_length" style="display: none">
+<div id="div_select_length">
+    <select id="select_length" name="space__length" aria-controls="space_" class="">
+      <option value="10">10 Rows</option>
+      <option value="20">20 Rows</option>
+      <option value="30">30 Rows</option>
+      <option value="-1">All Rows</option>
+    </select>
+</div>
+</div>
+</body>
+</html>

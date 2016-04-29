@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            {% for organization in organizations %}
+            <div class="col s6">
+            <div class="card">
+                <div class="card-image waves-effect waves-block waves-light">
+                    <a href="{% url 'spaces-list' org_id=organization.org_id %}">
+                  <img class="media-object activator" src="{{ organization.image.thumbnail_link }}" alt="{{ organization.name }}">
+                        </a>
+                </div>
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">{{ organization.name }}</span>
+                  <p>Org ID: {{ organization.org_id }}</p>
+                    <p>Org Type: {{ organization.tier}}</p>
+                </div>
+
+  </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

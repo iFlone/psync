@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+
+                    <div class="card-content">
+                      <span class="card-title">{{ space.name }}
+                          {% if back_url %}
+                          <a class="waves-effect waves-teal btn" style="float:right" href="{{ back_url }}"><small class="media-heading">Back</small></a>
+                          {% endif %}
+                      </span>
+                    <table class="mdl-data-table bordered striped" id="space_{{ back_id }}">
+        <thead>
+            <tr>
+                <th>Sync'ed</th>
+                <th>Application</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for app in applications_list %}
+            <tr data-application-id="{{ app.app_id }}" data-application-name="{{ app.config.name }}">
+            <td><input class="check-application-enable" type="checkbox" id="chk-{{ app.app_id }}" {{ app.sync_enabled }}/>
+                <label for="chk-{{ app.app_id }}"></label><input type="checkbox"  {{ app.sync_enabled }}></td>
+                <td><a href="{% url 'fields-list' application_id=app.app_id %}?back={{ space.space_id }}" class="link-next">{{ app.config.name }}</a></td>
+                <td>{{ app.config.description  }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        var dt_table = $('#space_{{ back_id }}').DataTable({
+            "iDisplayLength": 10,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search spaces..."
+            },
+            'order': [],
+            'columnDefs': [{
+                'targets': 0,
+                'searchable': false,
+                'orderable': false,
+                'width': '1%',
+                'className': 'dt-body-center'
+      }]
+        });
+        $("div.ddl-filter").html($('#ddl_length').html());
+        $('#select_length').material_select();
+        $('#select_length').on('change', function(){
+            dt_table.page.len($(this).val()).draw();
+
+        });
+        $('body').on('click', '.check-application-enable', function(e){
+            var app_id = $(this).closest('tr').data('application-id');
+            var app_name = $(this).closest('tr').data('application-name');
+            var checked = $(this).prop('checked');
+            var action_sync = 'remove';
+            if (checked){
+                action_sync = 'add';
+            }
+            $.ajax({
+                type: "POST",
+                url: "/sync/application/"+action_sync+"/"+app_id+"/",
+                data: {'application_name': app_name, 'podio_key_id': {{ podio_key_id }}, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                beforeSend: function(){
+
+                },
+                success: function(data){
+
+                }
+            });
+
+        })
+    });
+</script>
+{% endblock %}

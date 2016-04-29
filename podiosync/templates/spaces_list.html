@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+    <div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+
+            <div class="card-content">
+              <span class="card-title">{{ organization.name }} <a class="waves-effect waves-teal btn" style="float:right" href="{% url 'orgs-list' %}"><small class="media-heading">Back</small></a></span>
+              <table id="space_{{ back_id }}" class="mdl-data-table bordered striped" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+
+                <th>Workspace</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for space in spaces_list %}
+            <tr>
+
+                <td><a href="{% url 'applications-list' space_id=space.space_id %}?back={{ organization.org_id }}" class="link-next">{{ space.name }}</a></td>
+                <td>{{ space.description }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+            </div>
+
+          </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<script>
+    $(function(){
+        var dt_table = $('#space_{{ back_id }}').DataTable({
+            "iDisplayLength": 10,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search spaces..."
+            }
+        });
+        $("div.ddl-filter").html($('#ddl_length').html());
+        $('#select_length').material_select();
+        $('#select_length').on('change', function(){
+            dt_table.page.len($(this).val()).draw();
+
+        });
+
+    });
+</script>
+{% endblock %}

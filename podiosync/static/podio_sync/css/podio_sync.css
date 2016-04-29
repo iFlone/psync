@@ -1,0 +1,72 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+/* Typography */
+
+/* end of Typography */
+
+/* buttons */
+.waves-effect.btn {
+     /* The alpha value allows the text and background color
+     of the button to still show through. */
+      background-color: rgba(103, 58, 183, 0.75);
+}
+.waves-effect.btn:hover {
+     /* The alpha value allows the text and background color
+     of the button to still show through. */
+      background-color: rgba(103, 58, 183, 0.9);
+}
+/* end button */
+
+/* links */
+a {
+  color: #673ab7;
+}
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-floating) {
+  color: #673ab7;
+}
+/* end links */
+
+/* select */
+.select-wrapper li span {
+  color: #673ab7;
+}
+/* end select */
+
+/* DataTable */
+.dt-body-center {
+    text-align: center;
+}
+/* end DataTable */
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
