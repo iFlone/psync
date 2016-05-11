@@ -148,12 +148,6 @@ LOGGING = {
             'propagate': True,
             'level': 'ERROR',
         },
-        'podiosync': {
-            'handlers': ['file'],
-            'level': 'INFO',
-        },
     }
 }
 
-# PSYNC
-PSYNC_TABLE_PREFIX = 'psync'

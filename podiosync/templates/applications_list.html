@@ -24,7 +24,7 @@
         </thead>
         <tbody>
         {% for app in applications_list %}
-            <tr data-application-id="{{ app.app_id }}" data-application-name="{{ app.config.name }}">
+            <tr data-application-id="{{ app.app_id }}" data-application-name="{{ app.config.name }}" data-application-url="{{ app.link }}">
             <td><input class="check-application-enable" type="checkbox" id="chk-{{ app.app_id }}" {{ app.sync_enabled }}/>
                 <label for="chk-{{ app.app_id }}"></label><input type="checkbox"  {{ app.sync_enabled }}></td>
                 <td><a href="{% url 'fields-list' application_id=app.app_id %}?back={{ space.space_id }}" class="link-next">{{ app.config.name }}</a></td>
@@ -67,6 +67,7 @@
         $('body').on('click', '.check-application-enable', function(e){
             var app_id = $(this).closest('tr').data('application-id');
             var app_name = $(this).closest('tr').data('application-name');
+            var app_url = $(this).closest('tr').data('application-url');
             var checked = $(this).prop('checked');
             var action_sync = 'remove';
             if (checked){
@@ -75,7 +76,12 @@
             $.ajax({
                 type: "POST",
                 url: "/sync/application/"+action_sync+"/"+app_id+"/",
-                data: {'application_name': app_name, 'podio_key_id': {{ podio_key_id }}, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                data: {
+                    'application_name': app_name,
+                    'podio_key_id': {{ podio_key_id }},
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'application_url': app_url
+                },
                 beforeSend: function(){
 
                 },

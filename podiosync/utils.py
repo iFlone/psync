@@ -11,7 +11,7 @@ import datetime
 import pytz
 
 from podiosync.api import PodioApi
-from podiosync.models import ApplicationSync
+from podiosync.models import ApplicationSync, PodioKey
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,7 @@ def sync_application(app_id, api_user):
     :param api_user: User to enable Podio API usage
     :return: dictionary with message
     """
+    msg = {'result': 'error'}
     podio_api = PodioApi(api_user)
     app_data = get_application(app_id, podio_api)
     if app_data:
@@ -35,9 +36,10 @@ def sync_application(app_id, api_user):
                 if modify_table(model_to_update):
                     # now we can update the data
                     items = get_application_items(app_id, podio_api)
-                    if items:
-                        update_table(model_to_update, app_id, items)
-    return app_data
+                    if update_table(model_to_update, app_id, items):
+                        msg['result'] = 'success'
+
+    return msg
 
 
 def get_application(app_id, api_object):
@@ -60,7 +62,7 @@ def get_application_items(app_id, api_object, sort_desc=True):
         result = ['not_empty']  # adding value so we can enter the loop
         while len(result) > 0:
             dict_attributes['offset'] = i * 500  # setting the offset
-            result = api_object.auth.Item.filter(app_id, dict_attributes)['items']
+            result = api_object.auth.Item.filter(int(app_id), dict_attributes)['items']
             app_items.extend(result)
             i += 1
             if len(result) < 500:
@@ -95,6 +97,9 @@ def generate_fields(model_fields):
             # default values
 
             if f_status != 'deleted':
+                # required flag from field is ignored as empty field were returned from podio in numerous occasions.
+                # rather than entering buggus data, the fields are set to null/balnk
+                f_required = True
                 if f_type == 'text':
                     f_size = field['config']['settings']['size']
                     if f_size == 'small':
@@ -292,7 +297,7 @@ def update_table(model_class, app_id, items, database=None):
     for item in items:
         update_item = False
         item_id = item['item_id']
-        item_last_updated = pytz.utc.localize(parser.parse(item['last_event_on']))
+        item_last_updated = pytz.utc.localize(parser.parse(item['current_revision']['created_on']))
         if item_last_updated > app_last_updated:
             update_item = True
         if update_item:
@@ -420,3 +425,9 @@ def get_value_for_field(field, prof_id=False, date=None, app=False, extra=None):
     if isinstance(value, str):
         value = value.decode('utf-8')
     return value
+
+
+def get_app_details(app_id, podio_key_id):
+    podio_key = PodioKey.objects.get(id=podio_key_id)
+    podio_api = PodioApi(podio_key.podio_user.user_name)
+    return get_application(app_id, podio_api)

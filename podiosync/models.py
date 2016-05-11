@@ -51,6 +51,7 @@ class ApplicationSync(models.Model):
     application_enabled = models.BooleanField(default=False)
     last_synced = models.DateTimeField(blank=True, null=True)
     podio_key = models.ForeignKey(PodioKey)
+    application_url = models.CharField(max_length=255, blank=True, null=True)
 
 
 

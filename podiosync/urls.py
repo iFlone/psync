@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^list/applications/(?P<space_id>[^/]+)/$', podiosync_views.applications_list, name='applications-list'),
     url(r'^list/fields/(?P<application_id>[^/]+)/$', podiosync_views.fields_list, name='fields-list'),
     url(r'^sync/application/(?P<action_sync>[^/]+)/(?P<application_id>[^/]+)/$', podiosync_views.application_sync, name='application-sync'),
+    url(r'^sync/list/$', podiosync_views.sync_list, name='sync-list'),
+    url(r'^sync/run/$', podiosync_views.application_sync_data, name='sync-run'),
     url(r'^edit/settings/(?P<form_name>[^/]+)/$', podiosync_views.edit_settings, name='edit-settings'),
 ]

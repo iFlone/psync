@@ -70,3 +70,6 @@ a {
 code {
   font-size: 80%;
 }
+.icon-action {
+  cursor: pointer;
+}
