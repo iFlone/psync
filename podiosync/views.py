@@ -1,20 +1,16 @@
 import json
 import datetime
-import pytz
-
-from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import get_template
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.template import RequestContext
-from django.template.loader import render_to_string
 
-from podiosync.models import PodioKey, ApplicationSync
+from podiosync.models import PodioKey, ApplicationSync, SyncLog
 from podiosync.api import PodioApi
 from podiosync.forms import PodioKeyForm
 
-from podiosync.utils import create_model, modify_table, sync_application, get_app_details
+from podiosync.utils import sync_application, get_app_details
 
 
 # Create your views here.
@@ -140,3 +136,12 @@ def application_sync_data(request):
 
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
+
+def history(request, application_id=None):
+    t = get_template('history_list.html')
+    history_list = None
+    if application_id:
+        history_list = SyncLog.objects.filter(application__application_id=application_id)
+    else:
+        history_list = SyncLog.objects.all()
+    return HttpResponse(t.render(RequestContext(request, {'history_list': history_list})))

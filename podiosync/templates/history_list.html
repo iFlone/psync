@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+    <div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+
+            <div class="card-content">
+              <span class="card-title">History List <a class="waves-effect waves-teal btn" style="float:right" href="{% url 'index' %}"><small class="media-heading">Back</small></a></span>
+              <table id="table_history_list" class="mdl-data-table bordered striped" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Result</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for history in history_list %}
+            <tr>
+                <td>{{ history.created|date:"M d, Y, h:i A" }}</td>
+                <td>{{ history.application.application_name }}</td>
+                <td>{{ history.application.application_id }}</td>
+                <td>{{ history.result }}</td>
+                <td>{{ history.message }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+            </div>
+
+          </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<script>
+    $(function(){
+        var dt_table = $('#table_history_list').DataTable({
+            "iDisplayLength": 10,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search sync list..."
+            }
+        });
+
+
+
+
+    });
+</script>
+{% endblock %}

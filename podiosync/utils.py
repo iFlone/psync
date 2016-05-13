@@ -11,7 +11,7 @@ import datetime
 import pytz
 
 from podiosync.api import PodioApi
-from podiosync.models import ApplicationSync, PodioKey
+from podiosync.models import ApplicationSync, PodioKey, SyncLog
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,14 @@ def sync_application(app_id, api_user):
                     items = get_application_items(app_id, podio_api)
                     if update_table(model_to_update, app_id, items):
                         msg['result'] = 'success'
-
+                    else:
+                        log_info(app_id, 'ERROR', 'SYSTEM', 'Could not update table')
+                else:
+                    log_info(app_id, 'ERROR', 'SQL', 'Could not modify table')
+        else:
+            log_info(app_id, 'ERROR', 'SYSTEM', 'Could not generate fields')
+    else:
+        log_info(app_id, 'ERROR', 'PODIO', 'Could not retrieve Application from podio')
     return msg
 
 
@@ -47,6 +54,7 @@ def get_application(app_id, api_object):
         app_data = api_object.auth.Application.find(app_id)
         return app_data
     except Exception as e:
+        log_info(app_id, 'ERROR', 'PODIO', 'Could not retrieve Application from podio')
         logging.error(str(e))
         return
 
@@ -342,13 +350,21 @@ def update_table(model_class, app_id, items, database=None):
                 logger.error(str(e))
                 return
     if items_updated:
-        logger.info('%s items updated for table: %s' % (items_counter,
-                                                       model_class._meta.db_table))
+        msg = '%s items updated for table: %s' % (items_counter, model_class._meta.db_table)
+        logger.info(msg)
+        log_info(app_id, 'SUCCESS', 'SQL', msg)
+    else:
+        msg = 'No item to update'
+        logger.info(msg)
+        log_info(app_id, 'INFO', 'SQL', msg)
+
     app_object.last_synced = pytz.utc.localize(datetime.datetime.now())
     app_object.save()
-    logger.info('Table %s synchronised (app_id: %s, app_name: %s)' % (model_class._meta.db_table,
-                                                                      app_id,
-                                                                      app_object.application_name))
+    msg = 'Table %s synchronised (app_id: %s, app_name: %s)' % (model_class._meta.db_table,
+                                                                app_id,
+                                                                app_object.application_name)
+    logger.info(msg)
+    log_info(app_id, 'SUCCESS', 'SQL', msg)
     return True
 
 
@@ -431,3 +447,20 @@ def get_app_details(app_id, podio_key_id):
     podio_key = PodioKey.objects.get(id=podio_key_id)
     podio_api = PodioApi(podio_key.podio_user.user_name)
     return get_application(app_id, podio_api)
+
+
+def log_info(application, result, section, message):
+    try:
+        app = ApplicationSync.objects.get(application_id=application)
+        new_entry = SyncLog(application=app,
+                            result=result,
+                            section=section,
+                            message=message)
+        new_entry.save()
+        return True
+    except ApplicationSync.DoesNotExist as e:
+        logging.error(str(e))
+        return
+    except Exception as e:
+        logging.error(str(e))
+        return

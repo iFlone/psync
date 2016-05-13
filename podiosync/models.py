@@ -12,6 +12,9 @@ class PasswordField(models.Field):
     def __init__(self, *args, **kwargs):
         super(PasswordField, self).__init__(*args, **kwargs)
 
+    def db_type(self, connection):
+        return 'password'
+
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
@@ -53,5 +56,24 @@ class ApplicationSync(models.Model):
     podio_key = models.ForeignKey(PodioKey)
     application_url = models.CharField(max_length=255, blank=True, null=True)
 
+RESULTS = (
+    ('SUCCESS', 'Success'),
+    ('INFO', 'Info'),
+    ('ERROR', 'Error'),
+)
+SECTIONS = (
+    ('SQL', 'SQL Create/Modify'),
+    ('PODIO', 'PODIO Connectivity'),
+    ('UPDATE', 'Updating data'),
+    ('SYSTEM', 'System'),
+)
+
+
+class SyncLog(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    application = models.ForeignKey(ApplicationSync)
+    result = models.CharField(max_length=100, choices=RESULTS)
+    section = models.CharField(max_length=100, choices=SECTIONS)
+    message = models.TextField()
 
 

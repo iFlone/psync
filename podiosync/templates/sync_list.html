@@ -42,8 +42,8 @@
                     <label for="chk-{{ sync_point.application_id }}"></label><input type="checkbox"  {% if sync_point.application_enabled %}checked{% endif %}>
                 </td>
                 <td class="last-synced">{{ sync_point.last_synced|date:"M d, Y, h:i A" }}</td>
-                <td><i class="material-icons icon-action sync-now">sync</i> <i class="material-icons icon-action sync-history">history</i>
-                <div id="loader_{{ sync_point.application_id }}" class="preloader-wrapper small" style="height: 24px;width: 24px">
+                <td><i class="material-icons icon-action sync-now">sync</i>
+                    <div id="loader_{{ sync_point.application_id }}" class="preloader-wrapper small hide" style="height: 24px;width: 24px">
                     <div class="spinner-layer spinner-green-only">
                       <div class="circle-clipper left">
                         <div class="circle"></div>
@@ -54,6 +54,8 @@
                       </div>
                     </div>
                   </div>
+                    <i data-url="{% url 'history-app' sync_point.application_id %}" class="material-icons icon-action sync-history">history</i>
+
                 </td>
             </tr>
         {% endfor %}
@@ -118,11 +120,11 @@
                 data: {'application_id': app_id, 'podio_key_id': podio_key, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 beforeSend: function(){
                     $sync_icon.addClass('hide');
-                    $('#loader_'+app_id).addClass('active');
+                    $('#loader_'+app_id).addClass('active').removeClass('hide');
                 },
                 success: function(data){
                     $sync_icon.removeClass('hide');
-                    $('#loader_'+app_id).removeClass('active');
+                    $('#loader_'+app_id).removeClass('active').addClass('hide');
                     if (data.result === 'success' && data.last_synced){
                         $tr.find('.last-synced').html(data.last_synced);
                     }
@@ -136,7 +138,10 @@
 
 
         });
-
+        $('body').on('click', '.sync-history', function(e){
+            var $url = $(this).data('url');
+            window.location.replace($url);
+        });
 
     });
 </script>

@@ -11,5 +11,7 @@ urlpatterns = [
     url(r'^sync/application/(?P<action_sync>[^/]+)/(?P<application_id>[^/]+)/$', podiosync_views.application_sync, name='application-sync'),
     url(r'^sync/list/$', podiosync_views.sync_list, name='sync-list'),
     url(r'^sync/run/$', podiosync_views.application_sync_data, name='sync-run'),
+    url(r'^history/$', podiosync_views.history, name='history'),
+    url(r'^history/(?P<application_id>[^/]+)/$', podiosync_views.history, name='history-app'),
     url(r'^edit/settings/(?P<form_name>[^/]+)/$', podiosync_views.edit_settings, name='edit-settings'),
 ]
