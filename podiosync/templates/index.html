@@ -43,36 +43,51 @@
                 <span class="card-title activator grey-text text-darken-4">{% trans "Podio Settings" %}<i class="material-icons right">more_vert</i></span>
 
               <p>{% trans "Add / modify an account to be used when collecting data from Podio." %}</p>
-                {% if podio_setup %}
-                    <br>
-                    <p>Existing key(s):</p>
-                {% for setup in podio_setup %}
-
-                    {% if forloop.first %}<hr>{% endif %}
-                                <p>{{ setup.key_nickname }}
-                                <a class="waves-effect waves-teal btn" href="{% url 'admin:podiosync_podiokey_change' setup.id %}" role="button"><i class="material-icons">edit</i></a>
-                                <a class="waves-effect waves-teal btn" href="{% url 'admin:podiosync_podiokey_delete' setup.id %}" role="button"><i class="material-icons">delete</i></a>
-                                </p>
-
-                            {% if not forloop.last %}<hr>{% endif %}
-                            {% endfor %}
-                {% endif %}
-            </div>
-            <div class="card-reveal">
-                <span class="card-title grey-text text-darken-4">{% trans "Podio Settings" %}<i class="material-icons right">close</i></span>
-                    <p>{% blocktrans %}
+                {% blocktrans %}
                     You can add / view keys from here
                     {% endblocktrans %}</p>
                   {% if not podio_setup %}
                             <p>{% trans "No system is currently set." %}<br>
                             {% trans "You need to add a podio user and API details to start extracting data" %}</p>
-                            <p><a class="waves-effect waves-teal btn-flat" href="{% url 'admin:podiosync_podiokey_add' %}" role="button">{% trans "Add Podio Key" %} &raquo;</a></p>
+                            <p></p>
                         {% else %}
-                            <p><a class="waves-effect waves-teal btn" href="{% url 'admin:podiosync_podiokey_add' %}" role="button">{% trans "Add Podio Key" %} &raquo;</a>
-                            <a class="waves-effect waves-teal btn" href="{% url 'admin:podiosync_podiokey_changelist' %}" role="button">{% trans "View details" %} &raquo;</a></p>
-                            <hr>
+                            <p>{% trans "System set." %}<br>
+                            {% trans "You have created a podio key and you can now set application to be sync'ed" %}</p>
+                            <p></p>
 
                   {% endif %}
+
+            </div>
+            <div class="card-action">
+              <a class="waves-effect waves-teal btn" href="{% url 'admin:podiosync_podiokey_add' %}" role="button">{% trans "Add Podio Key" %} &raquo;</a>
+
+            </div>
+            <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">{% trans "Podio Settings" %}<i class="material-icons right">close</i></span>
+                    <p>
+                    {% if podio_setup %}
+                        <table class="bordered striped responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>User</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for setup in podio_setup %}
+                                    <tr>
+                                        <td>{{ setup.key_nickname }}</td>
+                                        <td>{{ setup.podio_user.user_name }}</td>
+                                        <td>
+                                            <a class="" href="{% url 'admin:podiosync_podiokey_change' setup.id %}" role="button"><i class="material-icons">edit</i></a>
+                                            <a class="" href="{% url 'admin:podiosync_podiokey_delete' setup.id %}" role="button"><i class="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                {% endif %}
             </div>
           </div>
         <div class="card">

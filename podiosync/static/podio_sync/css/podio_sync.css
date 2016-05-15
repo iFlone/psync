@@ -36,6 +36,12 @@ body {
      of the button to still show through. */
       background-color: rgba(103, 58, 183, 0.9);
 }
+.btn-floating {
+    background-color: rgba(103, 58, 183, 0.75);
+}
+.btn-floating:hover {
+    background-color: rgba(103, 58, 183, 0.9);
+}
 /* end button */
 
 /* links */
